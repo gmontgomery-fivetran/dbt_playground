@@ -1,0 +1,11 @@
+models:
+  - name: stg_dbt_graham__artist_tracks
+  - name: stg_dbt_graham__artist
+  - name: stg_dbt_graham__country_langs
+  - name: stg_dbt_graham__country
+  - name: stg_dbt_graham__lang
+  - name: stg_dbt_graham__track_language
+  - name: stg_dbt_graham__track
+  - name: stg_dbt_graham__weeklychart
+    
+      

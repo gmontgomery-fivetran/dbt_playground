@@ -1,0 +1,122 @@
+sources:
+  - name: dbt_graham
+    database: raw
+    tables:
+      - name: artist
+        description: Artist names and their preferred vocal language
+        columns:
+          - name: artist_name
+            description: primary key and name of the Artist
+            data_tests:
+              - unique
+              - not_null
+          - name: default_lang
+            description: the preferred vocal language of the artist, forign key to lang table
+      - name: artist_tracks
+        description: This table is a many to many link table
+        columns:
+          - name: track_id
+            description: The foriegn key to the tracks table
+            data_tests:
+              - not_null
+          - name: artist_id
+            description: The foriegn key to the artist table (artist_id = artist_name)
+            data_tests:
+              - not_null
+      - name: country
+        description: Relation table of country codes to Country Names
+        columns:
+          - name: country_code
+            description: Primary Key and 2 letter code of country
+            data_tests:
+              - unique
+              - not_null
+          - name: country_name
+            description: The full length name of the country (In English)
+            data_tests:
+              - not_null
+      - name: country_langs
+        description: Connection table between countries and their primary language
+        columns:
+          - name: country_code
+            description: Forign Key to country table
+            data_tests:
+              - not_null
+          - name: native_lang
+            description: Forign key to the lang table (language_abbr)
+            data_tests:
+              - not_null
+      - name: lang
+        description: List of language abbreviations and their full English name.
+        columns:
+          - name: language_abbr
+            description: the 2 letter abbreviation of the language
+            data_tests:
+              - unique
+              - not_null
+          - name: language_name
+            description: the full English name of the Language
+            data_tests:
+              - not_null
+      - name: track
+        description: List of tracks that appear on charts
+        columns:
+          - name: uri
+            description: Primary Key and uri to the spotify track
+            data_tests:
+              - unique
+              - not_null
+          - name: track_name
+            description: The name of the track
+            data_tests:
+              - not_null
+          - name: source
+            description: The originating publisher/studio
+      - name: track_language
+        description: link between track and the primary language the song is in
+        columns:
+          - name: track_id
+            description: Forign key to track table (uri)
+            data_tests:
+              - unique
+              - not_null
+          - name: language_abbr
+            description: Forign key to language table
+            data_tests:
+              - not_null
+          - name: confidence
+            description: value between 0 and 1 of the google translate confidence level of language
+      - name: weeklychart
+        description: List of all tracks per week that appear on weekly top charts
+        columns:
+          - name: week_chart_id
+            description: Primary Key
+            data_tests:
+              - unique
+              - not_null
+          - name: country_code
+            description: Forign key to country table
+            data_tests:
+              - not_null
+          - name: chart_week
+            description: date the week of the chart began
+            data_tests:
+              - not_null
+          - name: rank
+            description: The rank the track came in that week
+            data_tests:
+              - not_null
+          - name: track_id
+            description: Forign key to the track table (uri)
+            data_tests:
+              - not_null
+          - name: peak_rank
+            description: The highest the song has appeared on a chart up until this week
+          - name: previous_rank
+            description: The rank of the song on the preious chart (if appeared)
+          - name: weeks_on_chart
+            description: The consecutive weeks that the track has appeared in the top 200
+          - name: streams
+            description: The number of times the track was streamed in the week
+            data_tests:
+              - not_null

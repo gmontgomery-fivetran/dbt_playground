@@ -1,0 +1,17 @@
+models:
+  - name: int_tracks
+    description: This intermediate model represents a track along with the artist and language
+    columns:
+      - name: track_id
+        data_tests:
+          - unique
+          - not_null
+      - name: track_name
+        data_tests:
+          - not_null
+      - name: artist_name
+        data_tests:
+          - not_null
+      - name: language_name
+        data_tests:
+          - not_null
