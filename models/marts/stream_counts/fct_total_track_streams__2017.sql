@@ -1,0 +1,1 @@
+{{ get_total_streams_by_year(2017) }}

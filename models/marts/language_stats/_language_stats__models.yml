@@ -1,0 +1,88 @@
+models:
+  - name: dim_language__streams
+    description: >
+      Total streams per language across all countries and years, with each
+      language's share of overall streams.
+    columns:
+      - name: language_name
+        description: Name of the language. One row per language.
+        data_tests:
+          - unique
+          - not_null
+      - name: total_streams
+        description: Sum of streams for the language across all countries and years.
+        data_tests:
+          - not_null
+      - name: pct_of_streams
+        description: The language's percentage share of total streams across all languages.
+        data_tests:
+          - not_null
+
+  - name: dim_language__streams_by_country
+    description: >
+      Total streams per language within each country, with each language's share
+      of that country's streams.
+    config:
+      meta:
+        language_filters: "country_name"
+    data_tests:
+      - assert_valid_language_filter
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - language_name
+              - country_name
+    columns:
+      - name: language_name
+        description: Name of the language.
+        data_tests:
+          - not_null
+      - name: country_name
+        description: Name of the country the streams were charted in.
+        data_tests:
+          - not_null
+      - name: total_streams
+        description: Sum of streams for the language within the country.
+        data_tests:
+          - not_null
+      - name: pct_of_country_streams
+        description: The language's percentage share of total streams within the country.
+        data_tests:
+          - not_null
+
+  - name: dim_language__streams_by_year_country
+    description: >
+      Total streams per language within each country and chart year, with each
+      language's share of that country's streams for the year.
+    config: 
+      meta:
+        language_filters: "country_name, chart_year"
+    data_tests:
+      - assert_valid_language_filter
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - language_name
+              - country_name
+              - chart_year
+    columns:
+      - name: language_name
+        description: Name of the language.
+        data_tests:
+          - not_null
+      - name: country_name
+        description: Name of the country the streams were charted in.
+        data_tests:
+          - not_null
+      - name: chart_year
+        description: Calendar year derived from the chart week.
+        data_tests:
+          - not_null
+      - name: total_streams
+        description: Sum of streams for the language within the country and year.
+        data_tests:
+          - not_null
+      - name: pct_of_yearly_streams_by_country
+        description: The language's percentage share of the country's streams for the year.
+        data_tests:
+          - not_null

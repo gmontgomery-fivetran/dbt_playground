@@ -26,5 +26,5 @@ renamed as (
 select * from renamed
 
 {% if is_incremental() %}
-    where chart_week >= (select max(chart_week) from {{ this }}) 
+    where chart_week > (select max(chart_week) from {{ this }}) 
 {% endif %}

@@ -1,0 +1,35 @@
+macros:
+  - name: language_streams_filters
+    description: >
+      Returns a SELECT statement that aggregates total streams by language from
+      int_track_streams_by_language_year_country, optionally grouped by additional
+      dimensions. Used by the dim_language__streams* models to build the same
+      language-stream rollup at different grains.
+    arguments:
+      - name: pct_col_name
+        type: string
+        description: >
+          required parameter that will become the name of the percentage column in the table.
+      - name: filters
+        type: string
+        description: >
+          Optional comma-separated list of additional columns to select and group
+          by, alongside the default language_name grouping. Only dimension columns
+          from int_track_streams_by_language_year_country are accepted:
+          track_name, artist_name, country_name, chart_year. (language_name is
+          always grouped by default, and total_streams is the aggregated measure,
+          so neither should be passed here.) When omitted, streams are aggregated
+          by language_name only. Example: 'country_name' or 'country_name, chart_year'.
+
+
+  - name: get_total_streams_by_year
+    description: >
+      Returns a SELECT statement of track_name, artist_name, and total_streams
+      from int_track_streams_by_language_year_country, optionally filtered to a
+      single chart year. Used by the stream_counts models.
+    arguments:
+      - name: year
+        type: any
+        description: >
+          Chart year to filter on (e.g. 2016). When omitted or set to '*', all
+          years are returned.

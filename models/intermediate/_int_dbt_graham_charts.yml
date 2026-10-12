@@ -1,0 +1,59 @@
+models:
+  - name: int_country_info
+    description: This creates a table of full country names and their full native language
+    columns:
+      - name: country_name
+      - name: native_language
+    config: 
+      materialized: ephemeral
+
+  - name: int_tracks
+    description: This intermediate model represents a track along with the artist and language
+    columns:
+      - name: track_id
+        description: Unique identifier for the track. One row per track.
+        data_tests:
+          - unique
+          - not_null
+      - name: track_name
+        description: Display name of the track.
+        data_tests:
+          - not_null
+      - name: artist_name
+        description: Name of the artist credited with the track.
+        data_tests:
+          - not_null
+      - name: language_name
+        description: Name of the language the track is performed in.
+        data_tests:
+          - not_null
+
+  - name: int_track_streams_by_language_year_country
+    description: >
+      Intermediate model aggregating weekly chart streams to one row per track,
+      chart year, and country, enriched with artist, language, and country names.
+    columns:
+      - name: track_name
+        description: Display name of the track.
+        data_tests:
+          - not_null
+      - name: artist_name
+        description: Name of the artist credited with the track.
+        data_tests:
+          - not_null
+      - name: language_name
+        description: Name of the language the track is performed in.
+        data_tests:
+          - not_null
+      - name: country_name
+        description: Name of the country the streams were charted in.
+        data_tests:
+          - not_null
+      - name: chart_year
+        description: Calendar year derived from the chart week.
+        data_tests:
+          - not_null
+      - name: total_streams
+        description: Sum of weekly streams for the track within the given year and country.
+        data_tests:
+          - not_null

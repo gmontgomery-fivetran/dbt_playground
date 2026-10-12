@@ -1,11 +1,169 @@
 models:
   - name: stg_dbt_graham__artist_tracks
+    description: Many-to-many link table connecting artists to the tracks they perform.
+    columns:
+      - name: track_id
+        description: Foreign key to stg_dbt_graham__track.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__track')
+                field: track_id
+      - name: artist_name
+        description: Foreign key to stg_dbt_graham__artist (renamed from artist_id).
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__artist')
+                field: artist_name
+
   - name: stg_dbt_graham__artist
+    description: Artist names and their preferred vocal language.
+    columns:
+      - name: artist_name
+        description: Primary key and name of the artist.
+        data_tests:
+          - unique
+          - not_null
+      - name: default_lang
+        description: The artist's preferred vocal language; foreign key to stg_dbt_graham__lang (language_abbr).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__lang')
+                field: language_abbr
+
   - name: stg_dbt_graham__country_langs
+    description: Connection table between countries and their primary language.
+    columns:
+      - name: country_code
+        description: Foreign key to stg_dbt_graham__country.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__country')
+                field: country_code
+      - name: native_lang
+        description: Foreign key to stg_dbt_graham__lang (language_abbr).
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__lang')
+                field: language_abbr
+
   - name: stg_dbt_graham__country
+    description: Relation table of country codes to country names.
+    columns:
+      - name: country_code
+        description: Primary key and 2-letter code of the country.
+        data_tests:
+          - unique
+          - not_null
+      - name: country_name
+        description: The full-length name of the country (in English).
+        data_tests:
+          - not_null
+
   - name: stg_dbt_graham__lang
+    description: List of language abbreviations and their full English name.
+    columns:
+      - name: language_abbr
+        description: Primary key and 2-letter abbreviation of the language.
+        data_tests:
+          - unique
+          - not_null
+      - name: language_name
+        description: The full English name of the language.
+        data_tests:
+          - not_null
+
   - name: stg_dbt_graham__track_language
+    description: Link between a track and the primary language the song is in.
+    columns:
+      - name: track_id
+        description: Foreign key to stg_dbt_graham__track; one row per track.
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__track')
+                field: track_id
+      - name: language_abbr
+        description: Foreign key to stg_dbt_graham__lang.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__lang')
+                field: language_abbr
+      - name: confidence
+        description: Value between 0 and 1 of the Google Translate confidence level of the language.
+
   - name: stg_dbt_graham__track
+    description: List of tracks that appear on charts.
+    columns:
+      - name: track_id
+        description: Primary key and URI to the Spotify track (renamed from uri).
+        data_tests:
+          - unique
+          - not_null
+      - name: track_name
+        description: The name of the track.
+        data_tests:
+          - not_null
+      - name: source
+        description: The originating publisher/studio.
+
   - name: stg_dbt_graham__weeklychart
-    
-      
+    description: List of all tracks per week that appear on weekly top charts.
+    columns:
+      - name: weeklychart_id
+        description: Primary key (renamed from week_chart_id).
+        data_tests:
+          - unique
+          - not_null
+      - name: country_code
+        description: Foreign key to stg_dbt_graham__country.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__country')
+                field: country_code
+      - name: chart_week
+        description: Date the week of the chart began.
+        data_tests:
+          - not_null
+      - name: rank
+        description: The rank the track came in that week.
+        data_tests:
+          - not_null
+      - name: track_id
+        description: Foreign key to stg_dbt_graham__track.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dbt_graham__track')
+                field: track_id
+      - name: peak_rank
+        description: The highest the song has appeared on a chart up until this week.
+      - name: previous_rank
+        description: The rank of the song on the previous chart (if it appeared).
+      - name: weeks_on_chart
+        description: The consecutive weeks that the track has appeared in the top 200.
+      - name: total_streams_this_week
+        description: The number of times the track was streamed in the week (renamed from streams).
+        data_tests:
+          - not_null
+
+    config:
+      materialized: incremental
+      on_schema_change: fail
+      incremental_strategy: append
+

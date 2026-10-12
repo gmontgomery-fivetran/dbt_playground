@@ -1,0 +1,58 @@
+models:
+  - name: dim_total_track__streams
+    description: >
+      Total streams per track across all chart years and countries, sourced from
+      int_track_streams_by_language_year_country. Note: tracks can appear on
+      multiple rows because country and year are not carried through from the
+      upstream grain.
+    columns:
+      - name: track_name
+        description: Display name of the track.
+        data_tests:
+          - not_null
+      - name: artist_name
+        description: Name of the artist credited with the track.
+        data_tests:
+          - not_null
+      - name: total_streams
+        description: Sum of streams for the track within an upstream country/year grain.
+        data_tests:
+          - not_null
+
+  - name: fct_total_track_streams__2016
+    description: >
+      Total streams per track for chart year 2016, sourced from
+      int_track_streams_by_language_year_country. Note: tracks can appear on
+      multiple rows because country is not carried through from the upstream grain.
+    columns:
+      - name: track_name
+        description: Display name of the track.
+        data_tests:
+          - not_null
+      - name: artist_name
+        description: Name of the artist credited with the track.
+        data_tests:
+          - not_null
+      - name: total_streams
+        description: Sum of 2016 streams for the track within an upstream country grain.
+        data_tests:
+          - not_null
+
+  - name: fct_total_track_streams__2017
+    description: >
+      Total streams per track for chart year 2017, sourced from
+      int_track_streams_by_language_year_country. Note: tracks can appear on
+      multiple rows because country is not carried through from the upstream grain.
+    columns:
+      - name: track_name
+        description: Display name of the track.
+        data_tests:
+          - not_null
+      - name: artist_name
+        description: Name of the artist credited with the track.
+        data_tests:
+          - not_null
+      - name: total_streams
+        description: Sum of 2017 streams for the track within an upstream country grain.
+        data_tests:
+          - not_null
